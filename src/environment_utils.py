@@ -8,16 +8,20 @@ from unityagents import UnityEnvironment
 
 
 class Execution_Manager():
-    def __init__(self, agent, unity_env_path="/data/Banana_Linux_NoVis/Banana.x86_64"):
-
-        self.env = UnityEnvironment(file_name=unity_env_path)
+    def __init__(self, agent, unity_env="/data/Banana_Linux_NoVis/Banana.x86_64"):
+        if isinstance(unity_env, UnityEnvironment):
+            self.env = unity_env
+        elif isinstance(unity_env, str):
+            self.env = UnityEnvironment(file_name=unity_env)
+        else:
+            raise ValueError('unity_env must be a string path to the Unity environment or a UnityEnvironment instance.')
         # get the default brain
         self.brain_name = self.env.brain_names[0]
         self.brain = self.env.brains[self.brain_name]
         self.agent = agent
         self.train_scores = []
 
-    def plot_scores(self, scores=None):
+    def plot_scores(self, scores=None, file_out=None):
         scores = self.train_scores if scores is None else scores
         if len(scores) > 0:
             # plot the scores
@@ -26,9 +30,11 @@ class Execution_Manager():
             plt.plot(np.arange(len(scores)), scores)
             plt.ylabel('Score')
             plt.xlabel('Episode #')
+            if file_out is not None:
+                plt.savefig(file_out, dpi=150)
             plt.show()
 
-    def play_episode(self, max_t, eps, train_mode=False):
+    def play_episode(self, max_t, eps=0.0, train_mode=False):
         env_info = self.env.reset(train_mode=train_mode)[self.brain_name] # reset the environment
         state = env_info.vector_observations[0]     
         score = 0
@@ -37,8 +43,9 @@ class Execution_Manager():
             env_info = self.env.step(action)[self.brain_name]        # send the action to the environment
             next_state = env_info.vector_observations[0]   # get the next state
             reward = env_info.rewards[0]                   # get the reward
-            done = env_info.local_done[0]   
-            self.agent.step(state, action, reward, next_state, done)
+            done = env_info.local_done[0]
+            if train_mode: 
+                self.agent.step(state, action, reward, next_state, done)
             state = next_state
             score += reward
             if done:
@@ -60,7 +67,7 @@ class Execution_Manager():
             eps_end (float): minimum value of epsilon
             eps_decay (float): multiplicative factor (per episode) for decreasing epsilon
         """
-        
+        max_average_score = 0.
         scores_window = deque(maxlen=100)  # last 100 scores
         eps = eps_start                    # initialize epsilon
         for i_episode in range(1, n_episodes+1):
@@ -70,15 +77,17 @@ class Execution_Manager():
             eps = max(eps_end, eps_decay * eps) # decrease epsilon
             print('\rEpisode {}\tAverage Score: {:.2f}'.format(i_episode, np.mean(scores_window)), end="")
             if i_episode % 100 == 0:
-                print('\rEpisode {}\tAverage Score: {:.2f}\tEpisode Length: {:.2f}'.format(i_episode, np.mean(scores_window), max_t))
+                print('\rEpisode {}\tAverage Score: {:.2f}\teps: {:.2f}\tEpisode Length: {:.2f}'.format(
+                    i_episode, np.mean(scores_window), eps, max_t))
                 # max_t = int(1.1 * max_t)
-            if np.mean(scores_window) >= save_on_score:
-                print('\nEnvironment solved in {:d} episodes!\tAverage Score: {:.2f}'.format(i_episode-100, np.mean(scores_window)))
+            if np.mean(scores_window) >= save_on_score and np.mean(scores_window) > max_average_score:
+                print('\nEnvironment solved in {:d} episodes!\tAverage Score: {:.2f}'.format(i_episode, np.mean(scores_window)))
                 self.agent.save_model(out_file)
                 # torch.save(self.agent.qnetwork_local.state_dict(), out_file)
-                break
+                max_average_score = max(max_average_score, np.mean(scores_window))
+                    
         if np.mean(scores_window) < save_on_score:
-            print('\nEnvironment not solved in {:d} episodes!\tAverage Score: {:.2f}'.format(i_episode-100, np.mean(scores_window)))
+            print('\nEnvironment not solved in {:d} episodes!\tAverage Score: {:.2f}'.format(i_episode, np.mean(scores_window)))
             self.agent.save_model(out_file)
             # torch.save(self.agent.qnetwork_local.state_dict(), out_file)      
         return self.train_scores

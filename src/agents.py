@@ -2,7 +2,7 @@
 import numpy as np
 import torch
 import torch.optim as optim
-from .model import QNet
+from .model import DQN
 from .replay_buffers import ReplayBuffer, PrioritizedReplayBuffer
 import random
 
@@ -20,7 +20,7 @@ class Agent():
     def __init__(self, state_size, action_size, hidden_layers=None, seed=0, **kwargs):
 
         
-        self.qnetwork_local = QNet(state_size, action_size, hidden_layers, seed).to(device)
+        self.qnetwork_local = DQN(state_size, action_size, hidden_layers, seed).to(device)
         self.state_size = state_size
         self.action_size = action_size
         self.hidden_layer_sizes = self.qnetwork_local.hidden_layer_sizes
@@ -29,11 +29,12 @@ class Agent():
     def from_file(cls, filename):
         data = torch.load(filename)
         obj = cls.from_dict(data)
-        obj.qnetwork_local.load_state_dict(checkpoint['model_state_dict'])
+        obj.qnetwork_local.load_state_dict(data['weights'])
+        return obj
     
     @classmethod
     def from_dict(cls, data):
-        return cls(data['state_size'], data['action_size'], data['hidden_layers'], data['seed'], **data['kwargs'])
+        return cls(data['state_size'], data['action_size'], data['hidden_layer_sizes'], **data['kwargs'])
 
     def to_dict(self):
         data = {
@@ -41,7 +42,7 @@ class Agent():
             'action_size': self.action_size,
             'hidden_layer_sizes': self.hidden_layer_sizes,
             'weights': self.qnetwork_local.state_dict(),
-            'seed': self.qnetwork_local.seed,
+            'seed': self.qnetwork_local.seed.seed(),
             'kwargs': {}
         }
         return data
@@ -65,7 +66,7 @@ class Agent():
 class ReplayDDQNAgent(Agent):
     def __init__(self, state_size, action_size, hidden_layers=None, seed=0, **kwargs):
         super().__init__(state_size, action_size, hidden_layers, seed, **kwargs)
-        self.qnetwork_target = QNet(state_size, action_size, hidden_layers, seed).to(device)
+        self.qnetwork_target = DQN(state_size, action_size, hidden_layers, seed).to(device)
         
         self.rl = kwargs.get('rl', LR)
         self.batch_size = kwargs.get('batch_size', BATCH_SIZE)
@@ -82,6 +83,8 @@ class ReplayDDQNAgent(Agent):
 
     def to_dict(self):
         data = super().to_dict()
+        data.update({'target_weight': self.qnetwork_target.state_dict()})
+        data.update({'replay_memory': self.memory.memory})
         kwargs = {
             'rl': self.rl,
             'batch_size': self.batch_size,
@@ -140,6 +143,7 @@ class PriorityReplayDDQNAgent(ReplayDDQNAgent):
 
     def to_dict(self):
         data = super().to_dict()
+        data.update({'memory_priority': self.memory.priorities})
         kwargs = {
             'priority_correction_b': self.beta,
             'priority_probability_a': self.alpha
