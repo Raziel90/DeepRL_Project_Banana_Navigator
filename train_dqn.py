@@ -31,8 +31,8 @@ if __name__ == '__main__':
         batch_size=64,
         buffer_size=int(1e5),
         dueling=True, # using Dueling DQN
-        gamma=0.99, #discount factor
-        tau=1e-3, # for soft update of target parameters
+        gamma=0.995, #discount factor
+        tau=1e-3, # for soft update of target parameters (DDQN)
         priority_probability_a=.9, # Coefficient used to compute the importance of the priority weights during buffer sampling
         priority_correction_b=1. # Corrective factor for the loss in case of Priority Replay Buffer
         )
@@ -41,7 +41,7 @@ if __name__ == '__main__':
 
     training_manager.dqn_train(
         n_episodes=1800, max_t=600,
-        eps_start=1, eps_end=0.02, eps_decay=0.9950,
+        eps_start=1., eps_end=0.02, eps_decay=0.9950,
         target_score=13., out_file=checkpoint_path)
 
     training_manager.plot_scores(out_file=plot_fig_path)

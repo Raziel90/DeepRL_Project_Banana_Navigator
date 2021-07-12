@@ -1,10 +1,11 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-import torch.optim as optim
 
 class DQN(nn.Module):
-    
+    """
+    DQN Module Architecture
+    """
     def __init__(self, state_size=37, action_size=4, hidden_layer_sizes=None, seed=None):
         super(DQN, self).__init__()
         if seed is not None:
@@ -35,6 +36,9 @@ class DQN(nn.Module):
 
 
 class Dueling_DQN(nn.Module):
+    """
+    Dueling DQN architecture
+    """
     def __init__(self, state_size=37, action_size=4, hidden_layer_sizes=None, seed=None):
         super(Dueling_DQN, self).__init__()
         if seed is not None:
