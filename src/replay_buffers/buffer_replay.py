@@ -6,12 +6,13 @@ import torch
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 class ReplayBuffer():
+    experience = namedtuple('Experience', field_names=['state', 'action', 'reward', 'next_state', 'done'])
+    experience.__qualname__ = 'ReplayBuffer.experience' # necessary for pickling
     def __init__(self, action_size, buffer_size, batch_size, seed):
         self.action_size = action_size
         self.buffer_size = buffer_size
         self.batch_size = batch_size
         self.seed = random.seed(seed)
-        self.experience = namedtuple('Experience', field_names=['state', 'action', 'reward', 'next_state', 'done'])
         self.memory = deque(maxlen=buffer_size)
     
     def add(self, state, action, reward, next_state, done):
