@@ -67,6 +67,9 @@ class Execution_Manager():
             eps_start (float): starting value of epsilon, for epsilon-greedy action selection
             eps_end (float): minimum value of epsilon
             eps_decay (float): multiplicative factor (per episode) for decreasing epsilon
+            target_score (float): minimum score to to consider the problem solved. 
+                The agent with highest score is saved if the 100 episode average is highrt than target_score.
+            out_file (str): path to the checkpoint file
         """
         max_average_score = 0.
         scores_window = deque(maxlen=100)  # last 100 scores
@@ -82,7 +85,7 @@ class Execution_Manager():
                     i_episode, np.mean(scores_window), eps, max_t))
                 # max_t = int(1.1 * max_t)
                 if np.mean(scores_window) >= target_score and np.mean(scores_window) > max_average_score:
-                    print(u'New Record after {:d} episodes \N{trophy}!\tAverage Score: {:.2f}'.format(i_episode, np.mean(scores_window)))
+                    print(u'New Record after {:d} episodes! \N{trophy}\tAverage Score: {:.2f}'.format(i_episode, np.mean(scores_window)))
                     self.agent.save_model(out_file)
                     # torch.save(self.agent.qnetwork_local.state_dict(), out_file)
                     max_average_score = max(max_average_score, np.mean(scores_window))

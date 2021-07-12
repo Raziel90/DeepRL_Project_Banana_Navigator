@@ -10,7 +10,7 @@ ENV_PATH = package_path + "/unity/Banana.app"
 
 # package_path = '/'.join(__file__.split('/')[:-1])
 
-in_file = 'dueling_priority_replay.pth'
+in_file = 'trained_model.pth'
 checkpoint_path = package_path + '/assets/models/{}'.format(in_file)
 # plot_fig_path = package_path + '/assets/figs/{}'.format(out_file.split('.')[0] + '.svg')
 

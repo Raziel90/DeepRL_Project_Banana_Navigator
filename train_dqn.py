@@ -9,7 +9,7 @@ ACTIONS = 4
 LAYERS = [64, 128, 64]
 ENV_PATH = package_path + "/unity/Banana.app"
 
-out_file = 'dueling_priority_replay.pth'
+out_file = 'trained_model.pth'
 
 
 checkpoint_path = package_path + '/assets/models/{}'.format(out_file)
