@@ -131,3 +131,5 @@ dmypy.json
 
 #unity files
 unity/*
+
+*.DS_Store
