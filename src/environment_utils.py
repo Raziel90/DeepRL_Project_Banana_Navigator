@@ -12,7 +12,7 @@ class Execution_Manager():
         if isinstance(unity_env, UnityEnvironment):
             self.env = unity_env
         elif isinstance(unity_env, str):
-            self.env = UnityEnvironment(file_name=unity_env)
+            self.env = UnityEnvironment(file_name=unity_env, seed=int(np.random.randint(1e6)))
         else:
             raise ValueError('unity_env must be a string path to the Unity environment or a UnityEnvironment instance.')
         # get the default brain
@@ -21,17 +21,18 @@ class Execution_Manager():
         self.agent = agent
         self.train_scores = []
 
-    def plot_scores(self, scores=None, file_out=None):
+    def plot_scores(self, scores=None, out_file=None):
         scores = self.train_scores if scores is None else scores
         if len(scores) > 0:
             # plot the scores
             fig = plt.figure()
             ax = fig.add_subplot(111)
+            plt.ion()
             plt.plot(np.arange(len(scores)), scores)
             plt.ylabel('Score')
             plt.xlabel('Episode #')
-            if file_out is not None:
-                plt.savefig(file_out, dpi=150)
+            if out_file is not None:
+                plt.savefig(out_file, dpi=150)
             plt.show()
 
     def play_episode(self, max_t, eps=0.0, train_mode=False):
@@ -56,7 +57,7 @@ class Execution_Manager():
     def exit(self):
         self.env.close()
 
-    def dqn_train(self, n_episodes=5000, max_t=100, eps_start=1.0, eps_end=0.01, eps_decay=0.990, save_on_score=13., out_file='checkpoint.pth'):
+    def dqn_train(self, n_episodes=5000, max_t=100, eps_start=1.0, eps_end=0.01, eps_decay=0.990, target_score=13., out_file='checkpoint.pth'):
         """Deep Q-Learning.
         
         Params
@@ -80,13 +81,13 @@ class Execution_Manager():
                 print('\rEpisode {}\tAverage Score: {:.2f}\teps: {:.2f}\tEpisode Length: {:.2f}'.format(
                     i_episode, np.mean(scores_window), eps, max_t))
                 # max_t = int(1.1 * max_t)
-            if np.mean(scores_window) >= save_on_score and np.mean(scores_window) > max_average_score:
-                print('\nEnvironment solved in {:d} episodes!\tAverage Score: {:.2f}'.format(i_episode, np.mean(scores_window)))
-                self.agent.save_model(out_file)
-                # torch.save(self.agent.qnetwork_local.state_dict(), out_file)
-                max_average_score = max(max_average_score, np.mean(scores_window))
+                if np.mean(scores_window) >= target_score and np.mean(scores_window) > max_average_score:
+                    print(u'New Record after {:d} episodes \N{trophy}!\tAverage Score: {:.2f}'.format(i_episode, np.mean(scores_window)))
+                    self.agent.save_model(out_file)
+                    # torch.save(self.agent.qnetwork_local.state_dict(), out_file)
+                    max_average_score = max(max_average_score, np.mean(scores_window))
                     
-        if np.mean(scores_window) < save_on_score:
+        if max_average_score < target_score:
             print('\nEnvironment not solved in {:d} episodes!\tAverage Score: {:.2f}'.format(i_episode, np.mean(scores_window)))
             self.agent.save_model(out_file)
             # torch.save(self.agent.qnetwork_local.state_dict(), out_file)      
