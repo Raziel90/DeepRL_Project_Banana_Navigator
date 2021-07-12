@@ -6,11 +6,11 @@ from src import package_path
 
 
 LAYERS = [64, 64]
-ENV_PATH = "/Users/claudiocoppola/code/deep-reinforcement-learning/p1_navigation/Banana.app"
+ENV_PATH = package_path + "/unity/Banana.app"
 
 # package_path = '/'.join(__file__.split('/')[:-1])
 
-in_file = 'priority_replay.pth'
+in_file = 'dueling_priority_replay.pth'
 checkpoint_path = package_path + '/assets/models/{}'.format(in_file)
 # plot_fig_path = package_path + '/assets/figs/{}'.format(out_file.split('.')[0] + '.svg')
 
@@ -18,7 +18,7 @@ if __name__ == '__main__':
 
     print(package_path)
 
-    agent = PriorityReplayDDQNAgent.from_file(checkpoint_path)
+    agent = Agent.from_file(checkpoint_path)
     # agent = PriorityReplayDDQNAgent(states_dim, action_dim, hidden_layers=LAYERS, seed=0)
 
     training_manager = Execution_Manager(agent, ENV_PATH)
