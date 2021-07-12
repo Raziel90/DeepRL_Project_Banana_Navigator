@@ -81,7 +81,7 @@ dueling # (boolean) if True uses a Dueling DQN architecture if False a simple DQ
 ```
 ### Exclusive to (ReplayDDQNAgent, PriorityReplayDDQNAgent)
 ```python
-rl # learning rate of the neural network
+lr # learning rate of the neural network
 batch_size # size of the batch used for training the network
 gamma # discount factor used for the Agent Learning
 update_every # defines after how many steps the network should be updated
