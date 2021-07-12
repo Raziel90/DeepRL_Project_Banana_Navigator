@@ -74,7 +74,7 @@ class ReplayDDQNAgent(Agent):
         else:
             self.qnetwork_target = DQN(state_size, action_size, hidden_layers, seed).to(device)
         
-        self.rl = kwargs.get('rl', LR)
+        self.rl = kwargs.get('lr', LR)
         self.batch_size = kwargs.get('batch_size', BATCH_SIZE)
         self.gamma = kwargs.get('gamma', GAMMA)
         self.update_every = kwargs.get('update_every', UPDATE_EVERY)
