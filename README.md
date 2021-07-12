@@ -28,7 +28,7 @@ The task is episodic, and in order to solve the environment, your agent must get
    
 # Introduction
 
-In this repo you can find the code to train and run AI trained though Deep Reinforcement Learning based on the DQN Architecture.
+In this repo, you can find the code to train and run AI trained though Deep Reinforcement Learning based on the DQN Architecture.
 In particular, You'll find implementation of the following variants:
 - Basic Agent (for execution only) `Agent`
 - Double DQN with Classic Memory Replay `ReplayDDQNAgent`
@@ -38,6 +38,11 @@ Each those support both the following architectures:
 - DQN `DQN`
 - Dueling DQN `Dueling_DQN`
   
+The problem we are solving in this repo is the `BananaBrain` Game implemented as a Unity virtual environment.
+The game consists in collecting as many yellow bananas as possible, while avoiding the blue bananas.
+For each yellow banana collected the overall score increases by `+1`, while collecting a blue banana will provide a `-2` score decrease and will terminate the game episode.
+The problem will be considered solved once the agent can get an average score over 100 episodes of `13` in less than `1800` episodes. However, since, as you will see in the `Report.md`, that goal is reached very early (episode `400-700`) we'll push the training to a max number of episodes and we will save the agent version that performed the best on that metric. The winning agent will be referred as `final.pth` in the asset folder.
+
 ## Repo Organisation
 In the root of the folder you can find the following scripts:
 ```python
@@ -92,4 +97,20 @@ tau # coefficient of (linear) interpolation between the local and target network
 ```python
 priority_probability_a # Coefficient used to compute the importance of the priority weights during buffer sampling
 priority_correction_b # Corrective factor for the loss in case of Priority Replay Buffer
+```
+
+For example the agent can be instantiated with:
+```python
+    agent = PriorityReplayDDQNAgent(
+        states_dim, action_dim, hidden_layers=LAYERS,
+        update_every=4,
+        lr=5e-4, # learning rate
+        batch_size=64,
+        buffer_size=int(1e5),
+        dueling=True, # using Dueling DQN
+        gamma=0.99, #discount factor
+        tau=1e-3, # for soft update of target parameters
+        priority_probability_a=.9, # Coefficient used to compute the importance of the priority weights during buffer sampling
+        priority_correction_b=.9 # Corrective factor for the loss in case of Priority Replay Buffer
+        )
 ```
