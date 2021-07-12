@@ -2,7 +2,7 @@
 import numpy as np
 import torch
 import torch.optim as optim
-from .model import DQN
+from .model import DQN, Dueling_DQN
 from .replay_buffers import ReplayBuffer, PrioritizedReplayBuffer
 import random
 
@@ -13,14 +13,16 @@ TAU = 1e-3              # for soft update of target parameters
 LR = 5e-4               # learning rate 
 UPDATE_EVERY = 4        # how often to update the network
 PRIORITY_PROBABILITY_A = .9 # Coefficient used to compute the importance of the priority weights during buffer sampling
-PRIORITY_CORRECTION_B = 1. # corrective factor for the loss in case of Priority Replay Buffer
+PRIORITY_CORRECTION_B = 1. # Corrective factor for the loss in case of Priority Replay Buffer
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 class Agent():
     def __init__(self, state_size, action_size, hidden_layers=None, seed=0, **kwargs):
-
-        
-        self.qnetwork_local = DQN(state_size, action_size, hidden_layers, seed).to(device)
+        self.dueling_networks = kwargs.get('dueling', False)
+        if self.dueling_networks:
+            self.qnetwork_local = Dueling_DQN(state_size, action_size, hidden_layers, seed).to(device)    
+        else:
+            self.qnetwork_local = DQN(state_size, action_size, hidden_layers, seed).to(device)
         self.state_size = state_size
         self.action_size = action_size
         self.hidden_layer_sizes = self.qnetwork_local.hidden_layer_sizes
@@ -43,7 +45,7 @@ class Agent():
             'hidden_layer_sizes': self.hidden_layer_sizes,
             'weights': self.qnetwork_local.state_dict(),
             'seed': self.qnetwork_local.seed.seed(),
-            'kwargs': {}
+            'kwargs': {'dueling': self.dueling_networks}
         }
         return data
 
@@ -66,7 +68,11 @@ class Agent():
 class ReplayDDQNAgent(Agent):
     def __init__(self, state_size, action_size, hidden_layers=None, seed=0, **kwargs):
         super().__init__(state_size, action_size, hidden_layers, seed, **kwargs)
-        self.qnetwork_target = DQN(state_size, action_size, hidden_layers, seed).to(device)
+
+        if self.dueling_networks:
+            self.qnetwork_target = Dueling_DQN(state_size, action_size, hidden_layers, seed).to(device)    
+        else:
+            self.qnetwork_target = DQN(state_size, action_size, hidden_layers, seed).to(device)
         
         self.rl = kwargs.get('rl', LR)
         self.batch_size = kwargs.get('batch_size', BATCH_SIZE)
