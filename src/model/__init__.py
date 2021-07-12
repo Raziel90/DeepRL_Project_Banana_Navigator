@@ -1,3 +1,3 @@
-from .qnet import QNet
+from .qnet import DQN, Dueling_DQN
 
-__all__ = ['QNet']
+__all__ = ['DQN', 'Dueling_DQN']
