@@ -66,6 +66,34 @@ The code makes available 3 classes for agents (`Agent`, `ReplayDDQNAgent`, `Prio
 For additional details please refer to the original articles of this methods:
 
 [DQN](https://storage.googleapis.com/deepmind-media/dqn/DQNNaturePaper.pdf), [Double DQN](https://arxiv.org/abs/1509.06461), [Dueling DQN](https://arxiv.org/abs/1511.06581), [Priority Replay](https://arxiv.org/abs/1511.05952)
+
+## **Model Hyper-Parameters**
+
+Here are reported a series of hyper-parameters of the Learning Algorithm:
+The input layer size corresponds to the state vector (`37`).
+The output layer size corresponds to the number of actions available (`4`).
+The network used in this experiment has 3 fully connected hidden layers of respectfully [64, 128, 64] neurons followed by Relu Non-linearities.
+In previous attempts, an architecture with 2 hidden layers of [64, 64] neurons, but its convergence was slower.
+
+Regarding the Learning process, the model hyper-parameters are the following
+```python
+update_every=4,
+lr=5e-4, # learning rate
+batch_size=64,
+buffer_size=int(1e5),
+gamma=0.99, #discount factor
+tau=1e-3, # for soft update of target parameters (DDQN)
+priority_probability_a=.9, # Coefficient used to compute the importance of the priority weights during buffer sampling
+priority_correction_b=1. # Corrective factor for the loss in case of Priority Replay Buffer
+
+n_episodes=1800
+max_t=600,
+eps_start=1.,
+eps_end=0.02,
+eps_decay=0.9950,
+```
+For the semantics of the value, please refer to the Readme.md file
+
 ## **Training Performance**
 The Final approach used all the above mentioned mechanisms reaching a final average score superior to 15. Here are reported an animated GIF captured during the training process and the plot of the average score (100 episodes) during each episode:
 ![Training Process](./assets/training.gif)

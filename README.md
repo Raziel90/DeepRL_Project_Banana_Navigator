@@ -25,7 +25,25 @@ The task is episodic, and in order to solve the environment, your agent must get
     (_For AWS_) If you'd like to train the agent on AWS (and have not [enabled a virtual screen](https://github.com/Unity-Technologies/ml-agents/blob/master/docs/Training-on-Amazon-Web-Service.md)), then please use [this link](https://s3-us-west-1.amazonaws.com/udacity-drlnd/P1/Banana/Banana_Linux_NoVis.zip) to obtain the environment.
 
 2. Place the file in the DRLND GitHub repository, in the `unity/` folder, and unzip (or decompress) the file. 
-3. Install the relevant dependencies onw your conda workspace ([Following instructions in this link](https://github.com/udacity/deep-reinforcement-learning#dependencies))
+3. Install the relevant dependencies on your workspace. Please refer to ([this link](https://github.com/udacity/deep-reinforcement-learning#dependencies)) for detailed instructions.
+   
+   Alternatively, you may want to install the following packages using `pip install`:
+   ```bash
+   tensorflow==1.7.1
+   Pillow>=4.2.1
+   matplotlib
+   numpy>=1.11.0
+   jupyter
+   pytest>=3.2.2
+   docopt
+   pyyaml
+   protobuf==3.5.2
+   grpcio==1.11.0
+   torch==0.4.0
+   pandas
+   scipy
+   ipykernel
+   ```
 
 **NB:** The code on this repo has been tested for **MacOS only**. In other operative systems the name of the compiled environment may be differrent and therefore `train_dqn.py` and `run_dqn.py` may require to edit the extension of the unity executable app.
    
