@@ -60,7 +60,7 @@ The code makes available 3 classes for agents (`Agent`, `ReplayDDQNAgent`, `Prio
   <!-- $$
   Q(s,a;\Xi,\Phi) = V(s; \Xi) + \left(A(s,a;\Phi) - \frac{1}{|\mathcal{A}|}\sum_{a'\in\mathcal{A}}A(s,a';\Phi)\right)
   $$ --> 
-  <div align="center"><img style="background: white;" src="./assets/formulas/H4F2fR8eTy.svg"></div>
+  <div align="center" style="background: white;"><img style="background: white;" src="./assets/formulas/H4F2fR8eTy.svg"></div>
   Where Ξ and Φ correspond to the parameters of the A and V subnetworks.
 
 For additional details please refer to the original articles of this methods:
