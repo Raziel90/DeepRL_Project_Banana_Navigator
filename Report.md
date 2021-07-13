@@ -3,23 +3,33 @@
 ## **Model Description**
 The code in this repository implements processes to train and execute autonomous agents to navigate in the BananaBrain Unity environment.
 The code makes available 3 classes for agents (`Agent`, `ReplayDDQNAgent`, `PriorityReplayDDQNAgent`) using 2 different types of Neural Network (`DQN`, `Dueling_DQN`). Thus, it implements the following Deep Reinforcement Mechanisms:
-- `DQN`
-is an approach to train agents using reinforcement learning using a Neural Network. It is used to estimate the `Q(s,a)` advantage of using a certain action `a` in a specific state `s`. The neural network is trained using the following loss.
-$$ 
- L_i(\Theta_i) = \mathbb{E}_{s,a,r,s' \sim \mathbb{U}(D)} [(r + γ\max_{a'}Q(s,a';Θ_i^{-}) - Q(s,a; Θ_i))^2]
-$$
-    in which:
-      - γ is the discount factor determining the agent’s horizon;
-      - Θᵢ are the parameters of the Q-network at iteration i;
-      - Θ⁻ᵢ are the network parameters used to compute the target at iteration i;
-      - D is the dataset D = {e₁, e₂, ..., eₜ} and eₖ = (sₖ, aₖ, rₖ, sₖ₊₁)
-      - r is the reward 
-      -  The target network parameters `Θ⁻ᵢ` are only updated with the Q-network parameters `Θᵢ` every `C` steps and are held fixed between individual updates.
-  In practice however, as a single network is used, the target <code>$$\LaTeX $$</code>
-   the following formula:
+- `DQN` is an approach to train agents using reinforcement learning using a Neural Network. It is used to estimate the `Q(s,a)` advantage of using a certain action `a` in a specific state `s`. The neural network is trained using the following loss.
+    <!-- $$ 
+    L_i(\Theta_i) = \mathbb{E}_{s,a,r,s' \sim \mathbb{U}(D)} [(r + \gamma\max_{a'}Q(s,a';Θ_i^{-}) - Q(s,a; Θ_i))^2]
+    $$ --> 
+    <div align="center"><img style="background: white;" src="../svg/gxiczXoKT3.svg"></div> in which:
+  - <code>γ</code> is the discount factor determining the agent’s horizon;
+  - <code>Θᵢ</code> are the parameters of the Q-network at iteration i;
+  - <code>Θ⁻ᵢ</code> are the network parameters used to compute the target at iteration i;
+  - <code>D</code> is the dataset <code>D = {e₁, e₂, ..., eₜ}</code> and <code>eₖ = (sₖ, aₖ, rₖ, sₖ₊₁)</code>
+  - <code>r</code> is the reward
+  -  The target network parameters <code>Θ⁻ᵢ</code> are only updated with the Q-network parameters <code>Θᵢ</code> every <code>C</code> steps and are held fixed between individual updates.
+    
+    In practice however, as a single network is used, the target are computed with the following following formula:
 
-- `Double DQN (DDQN)`
-  is a modification of the DQN trained agents in which the target and local network parameters of the formula above are extrapolated by 2 separate networks occasionally synchornized when perfoming the learning phase. Using a single network for considering both parameters causes an overestimation of the Q function. 
+    <!-- $
+    r_{t+1} + γQ(S_{t+1}, \underset{a} {\mathrm{argmax}} Q(s_{t+1},a;Θ_i);Θ_i)
+    $ -->
+    <div align="center"><img style="background: white;" src="../svg/ClrjitGl3B.svg"></div>
+    Which often results in overoptimistic values.
+
+- `Double DQN (DDQN)` is a modification of the DQN trained agents in which the target and local network parameters of the formula above are extrapolated by 2 separate networks occasionally synchornized when perfoming the learning phase. Using a single network for considering both parameters causes an overoptimistic estimation of the Q function. 
+  In this case the target are computed as following:
+<!-- $
+r_{t+1} + γQ(S_{t+1}, \underset{a} {\mathrm{argmax}} Q(s_{t+1},a;Θ_i);Θ^{-}_i)
+$ --> 
+<div align="center"><img style="background: white;" src="../svg/yUOfwqdxnl.svg"></div>
+
 - `Memory Replay`
 - `Priority Memory Replay`
 - `Dueling Neural Network`
