@@ -4,8 +4,7 @@ from src.environment_utils import Execution_Manager
 from random import randint
 from src import package_path
 
-STATES = 37
-ACTIONS = 4
+
 LAYERS = [64, 128, 64]
 ENV_PATH = package_path + "/unity/Banana.app"
 
@@ -31,7 +30,7 @@ if __name__ == '__main__':
         batch_size=64,
         buffer_size=int(1e5),
         dueling=True, # using Dueling DQN
-        gamma=0.995, #discount factor
+        gamma=0.99, #discount factor
         tau=1e-3, # for soft update of target parameters (DDQN)
         priority_probability_a=.9, # Coefficient used to compute the importance of the priority weights during buffer sampling
         priority_correction_b=1. # Corrective factor for the loss in case of Priority Replay Buffer
