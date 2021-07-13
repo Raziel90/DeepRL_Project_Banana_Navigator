@@ -25,6 +25,9 @@ The task is episodic, and in order to solve the environment, your agent must get
     (_For AWS_) If you'd like to train the agent on AWS (and have not [enabled a virtual screen](https://github.com/Unity-Technologies/ml-agents/blob/master/docs/Training-on-Amazon-Web-Service.md)), then please use [this link](https://s3-us-west-1.amazonaws.com/udacity-drlnd/P1/Banana/Banana_Linux_NoVis.zip) to obtain the environment.
 
 2. Place the file in the DRLND GitHub repository, in the `unity/` folder, and unzip (or decompress) the file. 
+3. Install the relevant dependencies onw your conda workspace ([Following instructions in this link](https://github.com/udacity/deep-reinforcement-learning#dependencies))
+
+**NB:** The code on this repo has been tested for **MacOS only**. In other operative systems the name of the compiled environment may be differrent and therefore `train_dqn.py` and `run_dqn.py` may require to edit the extension of the unity executable app.
    
 # Introduction
 
@@ -41,7 +44,7 @@ Each those support both the following architectures:
 The problem we are solving in this repo is the `BananaBrain` Game implemented as a Unity virtual environment.
 The game consists in collecting as many yellow bananas as possible, while avoiding the blue bananas.
 For each yellow banana collected the overall score increases by `+1`, while collecting a blue banana will provide a `-2` score decrease and will terminate the game episode.
-The problem will be considered solved once the agent can get an average score over 100 episodes of `13` in less than `1800` episodes. However, since, as you will see in the `Report.md`, that goal is reached very early (episode `400-700`) we'll push the training to a max number of episodes and we will save the agent version that performed the best on that metric. The winning agent will be referred as `final.pth` in the asset folder.
+The problem will be considered solved once the agent can get an average score over 100 episodes of `13` in less than `1800` episodes. However, since, as you will see in the `Report.md`, that goal is reached very early (episode `400-700`) we'll push the training to a max number of episodes and we will save the agent version that performed the best on that metric. The winning agent will be referred as `trained_model.pth` in the asset folder.
 
 ## Repo Organisation
 In the root of the folder you can find the following scripts:
@@ -62,13 +65,34 @@ replay_buffers.buffer_replay #contains the code regarding the 2 variants of buff
 agents.py #contains the code of the 3 implemented agent variants
 environment_utils.py #contains the code that connects to the unity environment and that manages the training and execution of the agent.
 ```
+# How to use the framework
+
+After installing the required dependencies and activating the `drlnd` conda workspace the framework can be used veriy easily.
+## **Train**
+To train a new agent one has to execute the following command from the root of the repository:
+```bash
+python3.6 train_dqn.py
+```
+Once started, the script will launch the Unity environment and will report the scores on the terminal.
+The terminal screen will look like this:
+<!-- ![Training Terminal Example]() -->
+<img src="./assets/training_example.png" width="400">
+
+## **Execute**
+To run the trained model in a episode of the game, you'll have to run:
+```bash
+python3.6 run_dqn.py
+```
+This script will run the agent through an episode of a fixed length (400 steps) and will print the score obtained on screen.
+<img src="./assets/environment_window.png" width="400">
+
 
 # Agent Training
 In this section, one can find out how to edit the training parameters and which have been chosen for this specific problem.
 ## Training Script
 Most training details can be edited in the `train_dqn.py` file.
 `LAYERS = [64, 128, 64]` indicates the size (and number) of the hidden layers of the chosen DQN (In this case 3 hidden layers of respectfully 64, 128 and 64 neurons).
-`out_file = 'dueling_priority_replay.pth'` indicates the name of the file used for the checkpoint and the plot figure file.
+`out_file = 'trained_model.pth'` indicates the name of the file used for the checkpoint and the plot figure file.
 
 Most of the training hyperparameters are decided here:
 ```python
