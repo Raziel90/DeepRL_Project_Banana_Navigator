@@ -67,11 +67,11 @@ For additional details please refer to the original articles of this methods:
 
 [DQN](https://storage.googleapis.com/deepmind-media/dqn/DQNNaturePaper.pdf), [Double DQN](https://arxiv.org/abs/1509.06461), [Dueling DQN](https://arxiv.org/abs/1511.06581), [Priority Replay](https://arxiv.org/abs/1511.05952)
 ## **Training Performance**
-The Final approach used all the above mentioned mechanisms reaching a final average score superior to 15. Here are reported an animation captured during the training process and the plot of the average score (100 episodes) during each episode:
+The Final approach used all the above mentioned mechanisms reaching a final average score superior to 15. Here are reported an animated GIF captured during the training process and the plot of the average score (100 episodes) during each episode:
 ![Training Process](./assets/training.gif)
 ![Training Score averaged](./assets/figs/trained_model.svg)
 ## **Example Run**
-In here is reported an example execution of the trained agent.
+In here is reported a GIF of an example execution of the trained agent.
 ![Example execution of the trained agent](./assets/example-run.gif)
 
 ## **Future Improvements**
